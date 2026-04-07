@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Política de Privacidad — Cyntia SIEM</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    .legal-page { padding: 120px 5% 80px; position: relative; z-index: 1; min-height: 100vh; }
+    .legal-container { max-width: 800px; margin: 0 auto; }
+    .legal-back { display: inline-flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-dim); margin-bottom: 32px; transition: color var(--transition); }
+    .legal-back:hover { color: var(--crimson-light); }
+    .legal-back svg { transition: transform var(--transition); }
+    .legal-back:hover svg { transform: translateX(-3px); }
+    .legal-header { margin-bottom: 48px; }
+    .legal-header h1 { font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 800; letter-spacing: -0.03em; margin-bottom: 12px; }
+    .legal-header p { font-size: 0.9rem; color: var(--text-dim); }
+    .legal-header .legal-date { font-family: var(--mono); font-size: 0.75rem; color: var(--text-faint); margin-top: 8px; }
+    .legal-section { margin-bottom: 40px; }
+    .legal-section h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 12px; color: var(--text); padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    .legal-section h3 { font-size: 1rem; font-weight: 600; margin: 16px 0 8px; color: var(--text-dim); }
+    .legal-section p { font-size: 0.9rem; color: var(--text-dim); line-height: 1.75; margin-bottom: 12px; font-weight: 300; }
+    .legal-section ul { padding-left: 20px; margin-bottom: 12px; }
+    .legal-section li { font-size: 0.9rem; color: var(--text-dim); line-height: 1.75; margin-bottom: 6px; font-weight: 300; }
+    .legal-highlight { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--blue); border-radius: var(--radius); padding: 16px 20px; margin: 16px 0; }
+    .legal-highlight p { margin: 0; }
+    .legal-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.85rem; }
+    .legal-table th, .legal-table td { padding: 10px 14px; border: 1px solid var(--border); text-align: left; }
+    .legal-table th { background: var(--surface); font-weight: 600; color: var(--text); font-size: 0.8rem; }
+    .legal-table td { color: var(--text-dim); font-weight: 300; }
+  </style>
+</head>
+<body>
+
+<canvas id="particles" aria-hidden="true"></canvas>
+
+<header class="navbar" id="navbar">
+  <a href="index.html#inicio" class="nav-logo">
+    <svg width="34" height="34" viewBox="0 0 100 100" fill="none">
+      <path d="M75 50 A30 30 0 1 1 50 20" stroke="var(--crimson-light)" stroke-width="12" stroke-linecap="round" fill="none"/>
+      <path d="M75 50 A25 25 0 1 1 50 25" stroke="var(--blue)" stroke-width="8" stroke-linecap="round" fill="none" opacity="0.7"/>
+      <circle cx="50" cy="50" r="6" fill="var(--gold)"/>
+    </svg>
+    <span>Cyntia</span>
+  </a>
+  <div class="nav-actions">
+    <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
+      <span class="theme-icon sun">☀️</span>
+      <span class="theme-icon moon">🌙</span>
+    </button>
+  </div>
+</header>
+
+<main class="legal-page">
+  <div class="legal-container">
+    <a href="index.html" class="legal-back">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Volver al inicio
+    </a>
+
+    <div class="legal-header">
+      <div class="section-tag">Legal</div>
+      <h1>Política de Privacidad</h1>
+      <p>Cómo recopilamos, usamos y protegemos tus datos personales</p>
+      <div class="legal-date">Última actualización: 1 de enero de 2025</div>
+    </div>
+
+    <div class="legal-section">
+      <h2>1. Responsable del tratamiento</h2>
+      <p>El responsable del tratamiento de los datos personales es el equipo de desarrollo de Cyntia SIEM, en el marco del Trabajo de Final de Grado.</p>
+      <p>Contacto: <strong>privacidad@cyntia.io</strong></p>
+    </div>
+
+    <div class="legal-section">
+      <h2>2. Datos que recopilamos</h2>
+      <h3>2.1 Datos proporcionados por el usuario</h3>
+      <ul>
+        <li><strong>Datos de registro:</strong> nombre, apellidos, dirección de email y contraseña.</li>
+        <li><strong>Datos de contacto:</strong> información proporcionada a través del formulario de contacto (nombre, apellidos, email, mensaje).</li>
+        <li><strong>Datos de perfil:</strong> información adicional que el usuario decida proporcionar.</li>
+      </ul>
+
+      <h3>2.2 Datos recopilados automáticamente</h3>
+      <ul>
+        <li><strong>Datos de navegación:</strong> dirección IP, tipo de navegador, sistema operativo, páginas visitadas y tiempo de permanencia.</li>
+        <li><strong>Cookies:</strong> identificadores técnicos almacenados en el dispositivo del usuario (ver sección 6).</li>
+      </ul>
+
+      <h3>2.3 Datos de seguridad (usuarios de la plataforma SIEM)</h3>
+      <ul>
+        <li>Logs de sistemas y aplicaciones monitorizados.</li>
+        <li>Eventos de seguridad y alertas generadas.</li>
+        <li>Métricas de rendimiento de los agentes desplegados.</li>
+      </ul>
+    </div>
+
+    <div class="legal-section">
+      <h2>3. Finalidades del tratamiento</h2>
+      <table class="legal-table">
+        <thead>
+          <tr><th>Finalidad</th><th>Base legal</th><th>Plazo de conservación</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Gestión de cuentas de usuario</td><td>Ejecución del contrato</td><td>Duración de la cuenta</td></tr>
+          <tr><td>Respuesta a solicitudes de contacto</td><td>Consentimiento</td><td>1 año desde la consulta</td></tr>
+          <tr><td>Prestación del servicio SIEM</td><td>Ejecución del contrato</td><td>Según plan contratado</td></tr>
+          <tr><td>Mejora del servicio y análisis de uso</td><td>Interés legítimo</td><td>2 años (datos anonimizados)</td></tr>
+          <tr><td>Cumplimiento de obligaciones legales</td><td>Obligación legal</td><td>Según normativa aplicable</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="legal-section">
+      <h2>4. Derechos del usuario</h2>
+      <div class="legal-highlight">
+        <p>De acuerdo con el RGPD y la LOPD-GDD, el usuario tiene derecho de <strong>acceso</strong>, <strong>rectificación</strong>, <strong>supresión</strong>, <strong>portabilidad</strong>, <strong>limitación</strong> y <strong>oposición</strong> al tratamiento de sus datos personales.</p>
+      </div>
+      <p>Para ejercer estos derechos, puede contactarnos en <strong>privacidad@cyntia.io</strong> o a través del formulario de contacto. Responderemos en un plazo máximo de 30 días.</p>
+      <p>También tiene derecho a presentar una reclamación ante la Agencia Española de Protección de Datos (AEPD) si considera que el tratamiento de sus datos no es conforme a la normativa vigente.</p>
+    </div>
+
+    <div class="legal-section">
+      <h2>5. Seguridad de los datos</h2>
+      <p>Implementamos medidas técnicas y organizativas adecuadas para proteger los datos personales contra el acceso, alteración, divulgación o destrucción no autorizados, incluyendo:</p>
+      <ul>
+        <li>Cifrado TLS para todas las comunicaciones.</li>
+        <li>Almacenamiento cifrado de contraseñas (hash + salt).</li>
+        <li>Control de acceso basado en roles (RBAC).</li>
+        <li>Auditorías periódicas de seguridad.</li>
+        <li>Copias de seguridad automatizadas y cifradas.</li>
+      </ul>
+    </div>
+
+    <div class="legal-section">
+      <h2>6. Política de cookies</h2>
+      <p>Nuestro sitio web utiliza cookies para mejorar la experiencia del usuario. Las cookies se clasifican en:</p>
+
+      <h3>6.1 Cookies esenciales</h3>
+      <p>Necesarias para el funcionamiento básico del sitio. Incluyen cookies de sesión, autenticación y preferencias de tema. No se pueden desactivar.</p>
+
+      <h3>6.2 Cookies analíticas</h3>
+      <p>Nos permiten analizar el uso del sitio para mejorar la experiencia. Utilizan herramientas como Google Analytics con IP anonimizada.</p>
+
+      <h3>6.3 Cookies funcionales</h3>
+      <p>Permiten funcionalidades adicionales como el chatbot IA, preferencias de idioma y personalización de la interfaz.</p>
+
+      <p>El usuario puede gestionar sus preferencias de cookies en cualquier momento a través del banner de cookies o contactándonos directamente.</p>
+    </div>
+
+    <div class="legal-section">
+      <h2>7. Transferencias internacionales</h2>
+      <p>Los datos se almacenan en servidores dentro del Espacio Económico Europeo (EEE). En caso de que fuera necesario transferir datos fuera del EEE, se aplicarán las garantías adecuadas según el RGPD (cláusulas contractuales tipo, decisiones de adecuación, etc.).</p>
+    </div>
+
+    <div class="legal-section">
+      <h2>8. Modificaciones</h2>
+      <p>Nos reservamos el derecho de actualizar esta Política de Privacidad. Cualquier cambio será publicado en esta página con la fecha de actualización correspondiente. Recomendamos revisar periódicamente esta política.</p>
+    </div>
+
+    <div class="legal-section">
+      <h2>9. Contacto</h2>
+      <p>Para cualquier consulta sobre privacidad o protección de datos, contacte con nosotros en <strong>privacidad@cyntia.io</strong> o a través del <a href="index.html#contacto" style="color: var(--blue); text-decoration: underline;">formulario de contacto</a>.</p>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-bottom" style="border-top: none; padding-top: 0;">
+      <span>© 2025 Cyntia · Trabajo de Final de Grado · Todos los derechos reservados</span>
+      <span class="footer-bottom-links">
+        <a href="privacidad.html">Privacidad</a>
+        <a href="terminos.html">Términos</a>
+      </span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function() {
+  const root = document.documentElement;
+  const toggle = document.getElementById('themeToggle');
+  const saved = localStorage.getItem('cyntia-theme');
+  const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  root.setAttribute('data-theme', saved || (systemDark ? 'dark' : 'light'));
+  toggle?.addEventListener('click', () => {
+    const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    localStorage.setItem('cyntia-theme', next);
+  });
+})();
+</script>
+</body>
+</html>

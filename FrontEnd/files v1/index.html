@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cyntia — SIEM para PYMEs</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- ─── CANVAS DE PARTÍCULAS ─── -->
+<canvas id="particles" aria-hidden="true"></canvas>
+
+<!-- ─── CURSOR PERSONALIZADO ─── -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursorFollower"></div>
+
+<!-- ─── BARRA DE PROGRESO ─── -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- ══════════════════════════════════════════════
+     MODAL: LOGIN / REGISTRO
+═══════════════════════════════════════════════ -->
+<div class="modal-overlay" id="authOverlay" role="dialog" aria-modal="true" aria-label="Autenticación">
+  <div class="modal" id="authModal">
+    <button class="modal-close" id="authClose" aria-label="Cerrar">✕</button>
+
+    <!-- Login -->
+    <div class="auth-panel" id="loginPanel">
+      <div class="auth-logo">
+        <svg width="36" height="36" viewBox="0 0 100 100" fill="none">
+          <path d="M75 50 A30 30 0 1 1 50 20" stroke="var(--crimson-light)" stroke-width="12" stroke-linecap="round" fill="none"/>
+          <path d="M75 50 A25 25 0 1 1 50 25" stroke="var(--blue)" stroke-width="8" stroke-linecap="round" fill="none" opacity="0.7"/>
+          <circle cx="50" cy="50" r="6" fill="var(--gold)"/>
+        </svg>
+        <span>Cyntia</span>
+      </div>
+      <h2 class="auth-title">Iniciar sesión</h2>
+      <p class="auth-sub">Accede a tu panel de seguridad</p>
+      <div class="auth-error" id="loginError">Usuario y/o contraseña incorrectos</div>
+      <form id="loginForm" novalidate>
+        <div class="form-group">
+          <label for="loginUser">Usuario o email</label>
+          <input type="text" id="loginUser" placeholder="admin@empresa.com" autocomplete="username" />
+        </div>
+        <div class="form-group">
+          <label for="loginPass">Contraseña</label>
+          <div class="input-wrap">
+            <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" />
+            <button type="button" class="toggle-pass" data-target="loginPass">👁</button>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full">Acceder</button>
+      </form>
+      <p class="auth-switch">¿No tienes cuenta? <a href="#" id="goRegister">Regístrate</a></p>
+    </div>
+
+    <!-- Registro -->
+    <div class="auth-panel hidden" id="registerPanel">
+      <div class="auth-logo">
+        <svg width="36" height="36" viewBox="0 0 100 100" fill="none">
+          <path d="M75 50 A30 30 0 1 1 50 20" stroke="var(--crimson-light)" stroke-width="12" stroke-linecap="round" fill="none"/>
+          <path d="M75 50 A25 25 0 1 1 50 25" stroke="var(--blue)" stroke-width="8" stroke-linecap="round" fill="none" opacity="0.7"/>
+          <circle cx="50" cy="50" r="6" fill="var(--gold)"/>
+        </svg>
+        <span>Cyntia</span>
+      </div>
+      <h2 class="auth-title">Crear cuenta</h2>
+      <p class="auth-sub">Empieza a proteger tu empresa</p>
+      <div class="auth-error" id="registerError">Usuario y/o contraseña incorrectos</div>
+      <form id="registerForm" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="regName">Nombre</label>
+            <input type="text" id="regName" placeholder="Ana" autocomplete="given-name" />
+          </div>
+          <div class="form-group">
+            <label for="regSurname">Apellido</label>
+            <input type="text" id="regSurname" placeholder="García" autocomplete="family-name" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="regEmail">Email</label>
+          <input type="email" id="regEmail" placeholder="ana@empresa.com" autocomplete="email" />
+        </div>
+        <div class="form-group">
+          <label for="regPass">Contraseña</label>
+          <div class="input-wrap">
+            <input type="password" id="regPass" placeholder="Mín. 8 caracteres" autocomplete="new-password" />
+            <button type="button" class="toggle-pass" data-target="regPass">👁</button>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full">Crear cuenta</button>
+      </form>
+      <p class="auth-switch">¿Ya tienes cuenta? <a href="#" id="goLogin">Iniciar sesión</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     CHATBOT IA
+═══════════════════════════════════════════════ -->
+<div class="chatbot-wrapper" id="chatbotWrapper">
+  <!-- Botón flotante -->
+  <button class="chatbot-fab" id="chatbotFab" aria-label="Abrir asistente IA">
+    <span class="fab-icon fab-open">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    </span>
+    <span class="fab-icon fab-close hidden">✕</span>
+    <span class="fab-badge" id="fabBadge">ChatBot</span>
+  </button>
+
+  <!-- Panel de chat -->
+  <div class="chatbot-panel hidden" id="chatbotPanel">
+    <div class="chat-header">
+      <div class="chat-avatar">
+        <svg width="20" height="20" viewBox="0 0 100 100" fill="none">
+          <path d="M75 50 A30 30 0 1 1 50 20" stroke="var(--blue)" stroke-width="12" stroke-linecap="round" fill="none"/>
+          <circle cx="50" cy="50" r="5" fill="var(--gold)"/>
+        </svg>
+      </div>
+      <div class="chat-header-info">
+        <span class="chat-name">Cyntia Assistant</span>
+        <span class="chat-status"><span class="chat-dot"></span>Disponible · Llama 3.1</span>
+      </div>
+      <button class="chat-minimize" id="chatMinimize" aria-label="Minimizar">−</button>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="chat-msg bot">
+        <div class="msg-bubble">
+          👋 ¡Hola! Soy el asistente IA de <strong>Cyntia</strong>. Puedo ayudarte con preguntas sobre ciberseguridad, configuración del SIEM, detección de amenazas y más. ¿En qué puedo ayudarte?
+        </div>
+        <span class="msg-time">ahora</span>
+      </div>
+    </div>
+    <div class="chat-typing hidden" id="chatTyping">
+      <span></span><span></span><span></span>
+    </div>
+    <div class="chat-input-area">
+      <textarea id="chatInput" placeholder="Escribe tu pregunta..." rows="1" aria-label="Mensaje"></textarea>
+      <button id="chatSend" aria-label="Enviar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+    <div class="chat-footer">Powered by Groq · Llama 3.1 es IA y puede cometer errores. Por favor, verifica las respuestas.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     NAVEGACIÓN
+═══════════════════════════════════════════════ -->
+<header class="navbar" id="navbar">
+  <a href="#inicio" class="nav-logo">
+    <svg width="34" height="34" viewBox="0 0 100 100" fill="none">
+      <path d="M75 50 A30 30 0 1 1 50 20" stroke="var(--crimson-light)" stroke-width="12" stroke-linecap="round" fill="none"/>
+      <path d="M75 50 A25 25 0 1 1 50 25" stroke="var(--blue)" stroke-width="8" stroke-linecap="round" fill="none" opacity="0.7"/>
+      <circle cx="50" cy="50" r="6" fill="var(--gold)"/>
+    </svg>
+    <span>Cyntia</span>
+  </a>
+
+  <nav class="nav-links" aria-label="Navegación principal">
+    <a href="#caracteristicas">Características</a>
+    <a href="#como-funciona">Cómo funciona</a>
+    <a href="#servicios">Servicios</a>
+    <a href="#nosotros">Nosotros</a>
+    <a href="#contacto">Demo</a>
+  </nav>
+
+  <div class="nav-actions">
+    <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
+      <span class="theme-icon sun">☀️</span>
+      <span class="theme-icon moon">🌙</span>
+    </button>
+    <button class="btn btn-ghost" id="openLogin">Iniciar sesión</button>
+    <button class="btn btn-primary" id="openRegister">Registrarse</button>
+  </div>
+
+  <button class="hamburger" id="hamburger" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#caracteristicas">Características</a>
+  <a href="#como-funciona">Cómo funciona</a>
+  <a href="#servicios">Servicios</a>
+  <a href="#nosotros">Nosotros</a>
+  <a href="#contacto">Demo</a>
+  <button class="btn btn-primary btn-full" id="mobileLogin">Iniciar sesión</button>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════════ -->
+<section class="hero" id="inicio">
+  <div class="hero-inner">
+    <!-- Columna izquierda -->
+    <div class="hero-content" data-reveal>
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        SIEM Open Source para PYMEs
+      </div>
+
+      <h1 class="hero-title">
+        Seguridad<br>
+        <span class="gradient-text" id="typewriter"></span><br>
+        <span class="accent-blue">tu empresa</span>
+      </h1>
+
+      <p class="hero-sub">
+        Cyntia detecta amenazas, monitoriza tu infraestructura y responde a incidentes en tiempo real — sin necesidad de un SOC dedicado ni presupuestos de empresa Fortune 500.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#contacto" class="btn btn-primary magnetic">
+          Solicitar demo
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#como-funciona" class="btn btn-ghost magnetic">Ver arquitectura</a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-val" data-count="50000" data-suffix="K+">0</span>
+          <span class="stat-label">Eventos/seg</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-val" data-count="99" data-suffix=".9%">0</span>
+          <span class="stat-label">Uptime</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-val" data-count="2" data-suffix="s <">0</span>
+          <span class="stat-label">Detección RT</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna derecha: Dashboard Grafana -->
+    <div class="hero-dashboard" data-reveal data-delay="200">
+      <div class="grafana-window">
+        <!-- Titlebar -->
+        <div class="gf-titlebar">
+          <div class="gf-dots">
+            <span class="gf-dot red"></span>
+            <span class="gf-dot yellow"></span>
+            <span class="gf-dot green"></span>
+          </div>
+          <div class="gf-urlbar">grafana.cyntia.local · Security Overview</div>
+          <div class="gf-controls">
+            <span class="gf-pill">Last 6h</span>
+            <span class="gf-pill">⟳ Auto</span>
+          </div>
+        </div>
+
+        <!-- Grafana Layout -->
+        <div class="gf-body">
+          <!-- Sidebar -->
+          <nav class="gf-sidebar" aria-label="Grafana sidebar">
+            <div class="gf-logo-area">
+              <svg width="22" height="22" viewBox="0 0 100 100" fill="none">
+                <path d="M75 50 A30 30 0 1 1 50 20" stroke="#FF780A" stroke-width="12" stroke-linecap="round" fill="none"/>
+                <circle cx="50" cy="50" r="5" fill="#FF780A"/>
+              </svg>
+            </div>
+            <div class="gf-nav-items">
+              <div class="gf-nav-item active" title="Dashboards">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+              </div>
+              <div class="gf-nav-item" title="Alertas">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+              </div>
+              <div class="gf-nav-item" title="Explorar">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              </div>
+              <div class="gf-nav-item" title="Configuración">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.34 19.66l-1.41 1.41M21 12h-2M5 12H3M19.07 19.07l-1.41-1.41M4.34 4.34L2.93 5.75"/></svg>
+              </div>
+            </div>
+          </nav>
+
+          <!-- Main content -->
+          <div class="gf-main">
+            <div class="gf-topbar">
+              <span class="gf-breadcrumb">Dashboards / <strong>Security Overview</strong></span>
+              <div class="gf-topbar-actions">
+                <span class="gf-tag">Production</span>
+                <span class="gf-icon-btn">⊕</span>
+                <span class="gf-icon-btn">⚙</span>
+              </div>
+            </div>
+
+            <!-- Stat panels row -->
+            <div class="gf-row gf-stats-row">
+              <div class="gf-panel stat-panel">
+                <div class="gf-panel-header"><span>Alertas Críticas</span><span class="gf-menu">⋮</span></div>
+                <div class="gf-panel-body">
+                  <div class="gf-stat critical">3</div>
+                  <div class="gf-stat-sub">↑ 2 última hora</div>
+                </div>
+              </div>
+              <div class="gf-panel stat-panel">
+                <div class="gf-panel-header"><span>Alertas Medias</span><span class="gf-menu">⋮</span></div>
+                <div class="gf-panel-body">
+                  <div class="gf-stat warning">17</div>
+                  <div class="gf-stat-sub">↓ 5 resueltas</div>
+                </div>
+              </div>
+              <div class="gf-panel stat-panel">
+                <div class="gf-panel-header"><span>Agentes Online</span><span class="gf-menu">⋮</span></div>
+                <div class="gf-panel-body">
+                  <div class="gf-stat success">12<span class="gf-stat-total">/13</span></div>
+                  <div class="gf-stat-sub">1 desconectado</div>
+                </div>
+              </div>
+              <div class="gf-panel stat-panel">
+                <div class="gf-panel-header"><span>CPU Agentes</span><span class="gf-menu">⋮</span></div>
+                <div class="gf-panel-body">
+                  <div class="gf-stat info">45%</div>
+                  <div class="gf-gauge-bar"><div class="gf-gauge-fill" style="width:45%"></div></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Chart panel -->
+            <div class="gf-row">
+              <div class="gf-panel chart-panel">
+                <div class="gf-panel-header"><span>Eventos por hora — últimas 12h</span><span class="gf-menu">⋮</span></div>
+                <div class="gf-panel-body">
+                  <canvas id="grafanaChart" aria-label="Gráfico de eventos"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <!-- Alert list -->
+            <div class="gf-row">
+              <div class="gf-panel alert-panel">
+                <div class="gf-panel-header"><span>Alertas Recientes</span><span class="gf-menu">⋮</span></div>
+                <div class="gf-panel-body gf-alerts">
+                  <div class="gf-alert-item gf-crit">
+                    <span class="gf-alert-icon">●</span>
+                    <span class="gf-alert-text">SSH Brute Force · 192.168.1.45 → srv-main</span>
+                    <span class="gf-alert-time">14:32</span>
+                  </div>
+                  <div class="gf-alert-item gf-warn">
+                    <span class="gf-alert-icon">●</span>
+                    <span class="gf-alert-text">Privilege Escalation · srv-web-01</span>
+                    <span class="gf-alert-time">14:18</span>
+                  </div>
+                  <div class="gf-alert-item gf-med">
+                    <span class="gf-alert-icon">●</span>
+                    <span class="gf-alert-text">Unexpected port 4444 open · 0.0.0.0</span>
+                    <span class="gf-alert-time">13:55</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /gf-main -->
+        </div><!-- /gf-body -->
+      </div><!-- /grafana-window -->
+    </div><!-- /hero-dashboard -->
+  </div><!-- /hero-inner -->
+</section>
+
+<!-- ══════════════════════════════════════════════
+     CARACTERÍSTICAS
+═══════════════════════════════════════════════ -->
+<section class="section section-alt" id="caracteristicas">
+  <div class="container">
+    <div class="section-header" data-reveal>
+      <div class="section-tag">Capacidades</div>
+      <h2 class="section-title">Todo lo que necesitas<br>para proteger tu empresa</h2>
+      <p class="section-sub">Desde la ingesta de logs hasta la respuesta automatizada, Cyntia cubre el ciclo completo de seguridad con una interfaz diseñada para no-expertos.</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card" data-reveal data-delay="0">
+        <div class="feature-icon-wrap crimson">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>Detección de Intrusiones</h3>
+        <p>Motor de correlación basado en reglas MITRE ATT&amp;CK. Detecta ataques de fuerza bruta, escaladas de privilegios y movimientos laterales en tiempo real.</p>
+        <div class="feature-tag">IDS / IPS</div>
+      </div>
+
+      <div class="feature-card" data-reveal data-delay="80">
+        <div class="feature-icon-wrap blue">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <h3>Monitorización en Tiempo Real</h3>
+        <p>Dashboard Grafana integrado con métricas en vivo. Visualiza el estado de todos tus agentes, flujos de red y métricas de rendimiento desde un único panel.</p>
+        <div class="feature-tag">SIEM</div>
+      </div>
+
+      <div class="feature-card" data-reveal data-delay="160">
+        <div class="feature-icon-wrap crimson">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </div>
+        <h3>Análisis de Logs</h3>
+        <p>Ingesta y normalización de syslog, Windows Event Log, auditd y fuentes externas. Búsqueda full-text sobre millones de eventos con Elasticsearch.</p>
+        <div class="feature-tag">Log Management</div>
+      </div>
+
+      <div class="feature-card" data-reveal data-delay="0">
+        <div class="feature-icon-wrap blue">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <h3>Respuesta Automatizada</h3>
+        <p>Acciones de respuesta configurables: bloqueo de IPs, aislamiento de hosts, notificaciones por email/Slack y ejecución de scripts ante amenazas detectadas.</p>
+        <div class="feature-tag">SOAR</div>
+      </div>
+
+      <div class="feature-card" data-reveal data-delay="80">
+        <div class="feature-icon-wrap crimson">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+        </div>
+        <h3>Threat Intelligence</h3>
+        <p>Integración con feeds de inteligencia de amenazas (MISP, VirusTotal, AbuseIPDB). Correlación automática de IPs y dominios maliciosos conocidos.</p>
+        <div class="feature-tag">CTI</div>
+      </div>
+
+      <div class="feature-card" data-reveal data-delay="160">
+        <div class="feature-icon-wrap blue">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </div>
+        <h3>Compliance y Reportes</h3>
+        <p>Generación automática de informes para PCI-DSS, ISO 27001 y ENS. Evidencias auditables con trazabilidad completa de eventos de seguridad.</p>
+        <div class="feature-tag">Auditoría</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     CÓMO FUNCIONA
+═══════════════════════════════════════════════ -->
+<section class="section" id="como-funciona">
+  <div class="container">
+    <div class="section-header" data-reveal>
+      <div class="section-tag">Arquitectura</div>
+      <h2 class="section-title">Cómo funciona Cyntia</h2>
+      <p class="section-sub">Arquitectura ligera pensada para desplegarse en horas sobre la infraestructura existente de cualquier PYME.</p>
+    </div>
+
+    <div class="how-layout">
+      <div class="steps-list">
+        <div class="step active" data-step="0" data-reveal>
+          <div class="step-number">01</div>
+          <div class="step-body">
+            <h3>Despliegue de Agentes</h3>
+            <p>Agentes ligeros instalados en minutos en Windows, Linux y macOS. Envío cifrado (TLS) de eventos al servidor central. Consumo &lt;1% de CPU.</p>
+          </div>
+        </div>
+        <div class="step" data-step="1" data-reveal data-delay="100">
+          <div class="step-number">02</div>
+          <div class="step-body">
+            <h3>Ingesta y Normalización</h3>
+            <p>Pipeline de procesamiento normaliza syslog, Windows Event Log, auditd y APIs externas a un esquema común. Almacenamiento en Elasticsearch.</p>
+          </div>
+        </div>
+        <div class="step" data-step="2" data-reveal data-delay="200">
+          <div class="step-number">03</div>
+          <div class="step-body">
+            <h3>Correlación y Detección</h3>
+            <p>El motor de reglas analiza eventos en busca de patrones MITRE ATT&amp;CK. Análisis de comportamiento reduce falsos positivos un 60%.</p>
+          </div>
+        </div>
+        <div class="step" data-step="3" data-reveal data-delay="300">
+          <div class="step-number">04</div>
+          <div class="step-body">
+            <h3>Alerta y Respuesta</h3>
+            <p>Alertas en el dashboard de Grafana al instante. Respuestas automáticas configurables o notificación al responsable con contexto completo del incidente.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-visual" id="stepVisual" data-reveal>
+        <div class="step-visual-content" id="stepContent">
+          <div class="sv-icon">🖥️</div>
+          <h4 id="svTitle">Agentes Cyntia</h4>
+          <p id="svDesc">Compatibles con Windows Server 2016+, Ubuntu 18.04+, Debian 10+, CentOS 7+ y macOS 12+. Instalación vía script en menos de 5 minutos.</p>
+          <div class="sv-code" id="svCode">
+            <span class="code-comment"># Instalación rápida</span><br>
+            curl -sO https://cyntia.local/install.sh<br>
+            sudo bash install.sh --server 10.0.0.1
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SERVICIOS / PRECIOS
+═══════════════════════════════════════════════ -->
+<section class="section section-alt" id="servicios">
+  <div class="container">
+    <div class="section-header" data-reveal>
+      <div class="section-tag">Servicios</div>
+      <h2 class="section-title">Elige el plan que<br>se adapta a ti</h2>
+      <p class="section-sub">Desde la versión gratuita de código abierto hasta el despliegue gestionado para empresas con mayores necesidades.</p>
+    </div>
+
+    <div class="pricing-grid">
+      <!-- Core -->
+      <div class="pricing-card" data-reveal data-delay="0">
+        <div class="plan-badge">Básico</div>
+        <div class="plan-name">Cyntia Core</div>
+        <div class="plan-price">
+          <span class="price-amount">Gratis</span>
+          <span class="price-period">Open Source · MIT</span>
+        </div>
+        <ul class="plan-features">
+          <li class="feat-yes">✓ Hasta 5 agentes</li>
+          <li class="feat-yes">✓ Dashboard Grafana integrado</li>
+          <li class="feat-yes">✓ Detección de intrusiones básica</li>
+          <li class="feat-yes">✓ Alertas por email</li>
+          <li class="feat-yes">✓ Análisis de logs (7 días)</li>
+          <li class="feat-yes">✓ Reglas MITRE ATT&amp;CK</li>
+          <li class="feat-no">✗ Threat Intelligence</li>
+          <li class="feat-no">✗ Respuesta automática</li>
+          <li class="feat-no">✗ Reportes de compliance</li>
+          <li class="feat-no">✗ Soporte técnico</li>
+        </ul>
+        <a href="#contacto" class="btn btn-ghost btn-full">Descargar gratis</a>
+      </div>
+
+      <!-- Pro (destacado) -->
+      <div class="pricing-card featured" data-reveal data-delay="100">
+        <div class="plan-badge popular">⭐ Recomendado</div>
+        <div class="plan-name">Cyntia Pro</div>
+        <div class="plan-price">
+          <span class="price-amount">Consultar</span>
+          <span class="price-period">Licencia anual por empresa</span>
+        </div>
+        <ul class="plan-features">
+          <li class="feat-yes">✓ Agentes ilimitados</li>
+          <li class="feat-yes">✓ Dashboard avanzado multi-tenant</li>
+          <li class="feat-yes">✓ Detección de amenazas avanzada</li>
+          <li class="feat-yes">✓ Alertas email + Slack + webhook</li>
+          <li class="feat-yes">✓ Retención de logs 90 días</li>
+          <li class="feat-yes">✓ Threat Intelligence (MISP, VT)</li>
+          <li class="feat-yes">✓ Respuesta automática</li>
+          <li class="feat-yes">✓ Reportes PCI-DSS / ISO 27001</li>
+          <li class="feat-yes">✓ Análisis forense</li>
+          <li class="feat-no">✗ SLA garantizado</li>
+        </ul>
+        <a href="#contacto" class="btn btn-primary btn-full">Solicitar demo</a>
+      </div>
+
+      <!-- Enterprise -->
+      <div class="pricing-card" data-reveal data-delay="200">
+        <div class="plan-badge">Enterprise</div>
+        <div class="plan-name">Cyntia Enterprise</div>
+        <div class="plan-price">
+          <span class="price-amount">A medida</span>
+          <span class="price-period">Gestión completa incluida</span>
+        </div>
+        <ul class="plan-features">
+          <li class="feat-yes">✓ Todo de Pro, más:</li>
+          <li class="feat-yes">✓ Despliegue on-premise / cloud</li>
+          <li class="feat-yes">✓ SLA 99.9% garantizado</li>
+          <li class="feat-yes">✓ SOC gestionado 24/7</li>
+          <li class="feat-yes">✓ Retención de logs 1 año</li>
+          <li class="feat-yes">✓ Reglas personalizadas</li>
+          <li class="feat-yes">✓ Integración LDAP/AD</li>
+          <li class="feat-yes">✓ Formación para el equipo</li>
+          <li class="feat-yes">✓ Auditorías de seguridad</li>
+          <li class="feat-yes">✓ Soporte prioritario 24/7</li>
+        </ul>
+        <a href="#contacto" class="btn btn-ghost btn-full">Contactar ventas</a>
+      </div>
+    </div>
+
+    <!-- Extras destacados -->
+    <div class="extras-section" data-reveal>
+      <h3 class="extras-title">Módulos adicionales</h3>
+      <div class="extras-grid">
+        <div class="extra-card">
+          <span class="extra-icon">🔍</span>
+          <div>
+            <strong>Análisis forense</strong>
+            <p>Reconstrucción de incidentes con timeline completo</p>
+          </div>
+        </div>
+        <div class="extra-card">
+          <span class="extra-icon">🌐</span>
+          <div>
+            <strong>Network Monitoring</strong>
+            <p>Análisis de tráfico con detección de anomalías</p>
+          </div>
+        </div>
+        <div class="extra-card">
+          <span class="extra-icon">🤖</span>
+          <div>
+            <strong>IA Avanzada</strong>
+            <p>Modelos de ML para detección de amenazas 0-day</p>
+          </div>
+        </div>
+        <div class="extra-card">
+          <span class="extra-icon">📱</span>
+          <div>
+            <strong>App móvil</strong>
+            <p>Alertas y dashboard accesible desde smartphone</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     STACK TECNOLÓGICO
+═══════════════════════════════════════════════ -->
+<section class="section" id="tecnologia">
+  <div class="container">
+    <div class="section-header" data-reveal>
+      <div class="section-tag">Tecnología</div>
+      <h2 class="section-title">Construido sobre<br>herramientas de código abierto</h2>
+    </div>
+    <div class="stack-grid" data-reveal>
+      <div class="stack-item">
+        <div class="stack-logo">🔍</div>
+        <span class="stack-name">Elasticsearch</span>
+      </div>
+      <div class="stack-item">
+        <div class="stack-logo">📊</div>
+        <span class="stack-name">Grafana</span>
+      </div>
+      <div class="stack-item">
+        <div class="stack-logo">🐍</div>
+        <span class="stack-name">Python</span>
+      </div>
+      <div class="stack-item">
+        <div class="stack-logo">🐋</div>
+        <span class="stack-name">Docker</span>
+      </div>
+      <div class="stack-item">
+        <div class="stack-logo">📦</div>
+        <span class="stack-name">Logstash</span>
+      </div>
+      <div class="stack-item">
+        <div class="stack-logo">🔐</div>
+        <span class="stack-name">OpenSSL</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SOBRE NOSOTROS
+═══════════════════════════════════════════════ -->
+<section class="section section-alt" id="nosotros">
+  <div class="container">
+    <div class="section-header" data-reveal>
+      <div class="section-tag">Nosotros</div>
+      <h2 class="section-title">El equipo detrás<br>de Cyntia</h2>
+      <p class="section-sub">Cyntia nace como Trabajo de Final de Grado con un objetivo claro: democratizar la ciberseguridad para las pequeñas y medianas empresas que no pueden permitirse un SOC.</p>
+    </div>
+
+    <!-- Misión -->
+    <div class="mission-block" data-reveal>
+      <div class="mission-icon">🎯</div>
+      <div>
+        <h3>Nuestra misión</h3>
+        <p>El 70% de los ciberataques tienen como objetivo PYMEs, pero el 60% de estas empresas no dispone de herramientas de monitorización. Cyntia elimina esa brecha ofreciendo un SIEM moderno, accesible y fácil de operar sin necesidad de conocimientos especializados en ciberseguridad.</p>
+      </div>
+    </div>
+
+    <!-- ⚠️ PERSONALIZA con la información de tu equipo -->
+    <div class="team-grid">
+      <div class="team-card" data-reveal data-delay="0">
+        <div class="team-avatar" style="--av-color: var(--crimson)">TN</div>
+        <h4 class="team-name">Jeet Warde</h4>
+        <span class="team-role">Desarrollador Principal</span>
+        <p class="team-bio">Responsable de la arquitectura del sistema, el motor de correlación y el backend de Cyntia.</p>
+        <div class="team-links">
+          <a href="#" aria-label="GitHub">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          </a>
+          <a href="#" aria-label="LinkedIn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="team-card" data-reveal data-delay="100">
+        <div class="team-avatar" style="--av-color: var(--blue-dim)">C2</div>
+        <h4 class="team-name">Compañero/a 2</h4>
+        <span class="team-role">Seguridad &amp; Análisis</span>
+        <p class="team-bio">Diseño de reglas de detección, integración de Threat Intelligence y validación de alertas del sistema.</p>
+        <div class="team-links">
+          <a href="#" aria-label="GitHub"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></a>
+          <a href="#" aria-label="LinkedIn"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+        </div>
+      </div>
+
+      <div class="team-card" data-reveal data-delay="200">
+        <div class="team-avatar" style="--av-color: var(--gold)">C3</div>
+        <h4 class="team-name">Compañero/a 3</h4>
+        <span class="team-role">Frontend &amp; UX</span>
+        <p class="team-bio">Diseño de la interfaz de usuario, experiencia del operador en el dashboard y documentación del proyecto.</p>
+        <div class="team-links">
+          <a href="#" aria-label="GitHub"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></a>
+          <a href="#" aria-label="LinkedIn"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+        </div>
+      </div>
+
+      <!-- Tutor -->
+      <div class="team-card tutor-card" data-reveal data-delay="300">
+        <div class="team-avatar" style="--av-color: #888">TU</div>
+        <h4 class="team-name">Tutor/a TFG</h4>
+        <span class="team-role">Director/a del proyecto</span>
+        <p class="team-bio">Profesor/a del departamento de Ingeniería Informática. Supervisor del Trabajo de Final de Grado.</p>
+        <div class="team-links">
+          <a href="#" aria-label="Web"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> 
+
+<!-- ══════════════════════════════════════════════
+     CTA FINAL
+═══════════════════════════════════════════════ -->
+<section class="section cta-section" id="contacto">
+  <div class="container">
+    <div class="cta-card" data-reveal>
+      <div class="cta-glow-1"></div>
+      <div class="cta-glow-2"></div>
+      <div class="section-tag" style="text-align:center">Empieza hoy</div>
+      <h2 class="cta-title">Protege tu empresa<br><span class="gradient-text">desde este momento</span></h2>
+      <p class="cta-sub">Despliega Cyntia en tu infraestructura en menos de una hora. Sin tarjeta de crédito, sin compromiso.</p>
+      <div class="cta-actions">
+        <a href="#" class="btn btn-primary btn-lg magnetic">Solicitar demo gratuita</a>
+        <a href="#" class="btn btn-ghost btn-lg">Ver documentación →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand-col">
+        <a href="#inicio" class="footer-logo">
+          <svg width="28" height="28" viewBox="0 0 100 100" fill="none">
+            <path d="M75 50 A30 30 0 1 1 50 20" stroke="var(--crimson-light)" stroke-width="12" stroke-linecap="round" fill="none"/>
+            <path d="M75 50 A25 25 0 1 1 50 25" stroke="var(--blue)" stroke-width="8" stroke-linecap="round" fill="none" opacity="0.7"/>
+            <circle cx="50" cy="50" r="6" fill="var(--gold)"/>
+          </svg>
+          <span>Cyntia</span>
+        </a>
+        <p class="footer-desc">SIEM de código abierto diseñado para que las PYMEs puedan defenderse de ciberataques sin necesitar un equipo de expertos.</p>
+        <div class="footer-version">v1.0.0 · TFG 2024/2025</div>
+      </div>
+      <div class="footer-col">
+        <h5>Producto</h5>
+        <a href="#caracteristicas">Características</a>
+        <a href="#como-funciona">Arquitectura</a>
+        <a href="#servicios">Servicios</a>
+        <a href="#tecnologia">Tecnología</a>
+      </div>
+      <div class="footer-col">
+        <h5>Recursos</h5>
+        <a href="#">Documentación</a>
+        <a href="#">GitHub</a>
+        <a href="#">API Reference</a>
+        <a href="#">Changelog</a>
+      </div>
+      <div class="footer-col">
+        <h5>Proyecto</h5>
+        <a href="#nosotros">El equipo</a>
+        <a href="#">Universidad</a>
+        <a href="#">Memoria TFG</a>
+        <a href="#contacto">Contacto</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Cyntia · Trabajo de Final de Grado · Todos los derechos reservados</span>
+      <span class="footer-bottom-links">
+        <a href="#">Privacidad</a>
+        <a href="#">Términos</a>
+      </span>
+    </div>
+  </div>
+</footer>
+
+<!-- Scripts -->
+<script src="auth.js"></script>
+<script src="chatbot.js"></script>
+<script src="main.js"></script>
+</body>
+</html>

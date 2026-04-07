@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Términos y Condiciones — Cyntia SIEM</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    .legal-page { padding: 120px 5% 80px; position: relative; z-index: 1; min-height: 100vh; }
+    .legal-container { max-width: 800px; margin: 0 auto; }
+    .legal-back { display: inline-flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-dim); margin-bottom: 32px; transition: color var(--transition); }
+    .legal-back:hover { color: var(--crimson-light); }
+    .legal-back svg { transition: transform var(--transition); }
+    .legal-back:hover svg { transform: translateX(-3px); }
+    .legal-header { margin-bottom: 48px; }
+    .legal-header h1 { font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 800; letter-spacing: -0.03em; margin-bottom: 12px; }
+    .legal-header p { font-size: 0.9rem; color: var(--text-dim); }
+    .legal-header .legal-date { font-family: var(--mono); font-size: 0.75rem; color: var(--text-faint); margin-top: 8px; }
+    .legal-section { margin-bottom: 40px; }
+    .legal-section h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 12px; color: var(--text); padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    .legal-section h3 { font-size: 1rem; font-weight: 600; margin: 16px 0 8px; color: var(--text-dim); }
+    .legal-section p { font-size: 0.9rem; color: var(--text-dim); line-height: 1.75; margin-bottom: 12px; font-weight: 300; }
+    .legal-section ul { padding-left: 20px; margin-bottom: 12px; }
+    .legal-section li { font-size: 0.9rem; color: var(--text-dim); line-height: 1.75; margin-bottom: 6px; font-weight: 300; }
+    .legal-highlight { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--crimson-light); border-radius: var(--radius); padding: 16px 20px; margin: 16px 0; }
+    .legal-highlight p { margin: 0; }
+  </style>
+</head>
+<body>
+
+<canvas id="particles" aria-hidden="true"></canvas>
+
+<!-- Navbar simplificada -->
+<header class="navbar" id="navbar">
+  <a href="index.html#inicio" class="nav-logo">
+    <svg width="34" height="34" viewBox="0 0 100 100" fill="none">
+      <path d="M75 50 A30 30 0 1 1 50 20" stroke="var(--crimson-light)" stroke-width="12" stroke-linecap="round" fill="none"/>
+      <path d="M75 50 A25 25 0 1 1 50 25" stroke="var(--blue)" stroke-width="8" stroke-linecap="round" fill="none" opacity="0.7"/>
+      <circle cx="50" cy="50" r="6" fill="var(--gold)"/>
+    </svg>
+    <span>Cyntia</span>
+  </a>
+  <div class="nav-actions">
+    <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
+      <span class="theme-icon sun">☀️</span>
+      <span class="theme-icon moon">🌙</span>
+    </button>
+  </div>
+</header>
+
+<main class="legal-page">
+  <div class="legal-container">
+    <a href="index.html" class="legal-back">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Volver al inicio
+    </a>
+
+    <div class="legal-header">
+      <div class="section-tag">Legal</div>
+      <h1>Términos y Condiciones</h1>
+      <p>Condiciones generales de uso de la plataforma Cyntia SIEM</p>
+      <div class="legal-date">Última actualización: 1 de enero de 2025</div>
+    </div>
+
+    <div class="legal-section">
+      <h2>1. Información general</h2>
+      <p>Estos Términos y Condiciones regulan el acceso y uso de la plataforma Cyntia SIEM (en adelante, "la Plataforma"), desarrollada como Trabajo de Final de Grado. Al acceder o utilizar la Plataforma, el usuario acepta quedar vinculado por estos términos.</p>
+      <p>La Plataforma es un sistema SIEM (Security Information and Event Management) de código abierto diseñado para pequeñas y medianas empresas (PYMEs).</p>
+    </div>
+
+    <div class="legal-section">
+      <h2>2. Definiciones</h2>
+      <ul>
+        <li><strong>Plataforma:</strong> El software Cyntia SIEM, incluyendo su interfaz web, agentes, APIs y documentación.</li>
+        <li><strong>Usuario:</strong> Cualquier persona física o jurídica que acceda o utilice la Plataforma.</li>
+        <li><strong>Agente:</strong> Software ligero instalado en los equipos del usuario para la recolección de eventos de seguridad.</li>
+        <li><strong>Datos de seguridad:</strong> Logs, eventos, alertas y cualquier información procesada por la Plataforma.</li>
+      </ul>
+    </div>
+
+    <div class="legal-section">
+      <h2>3. Condiciones de uso</h2>
+      <h3>3.1 Requisitos del usuario</h3>
+      <p>Para utilizar la Plataforma, el usuario debe ser mayor de edad legal y tener capacidad jurídica para aceptar estos términos. En caso de uso empresarial, el usuario declara tener autorización de la empresa para contratar estos servicios.</p>
+
+      <h3>3.2 Registro y cuenta</h3>
+      <p>Ciertas funcionalidades de la Plataforma requieren la creación de una cuenta de usuario. El usuario se compromete a proporcionar información veraz y actualizada, y a mantener la confidencialidad de sus credenciales de acceso.</p>
+
+      <h3>3.3 Uso aceptable</h3>
+      <p>El usuario se compromete a utilizar la Plataforma exclusivamente para fines de monitorización y seguridad legítimos. Queda prohibido:</p>
+      <ul>
+        <li>Utilizar la Plataforma para actividades ilegales o no autorizadas.</li>
+        <li>Intentar acceder a datos de otros usuarios sin autorización.</li>
+        <li>Realizar ingeniería inversa del software salvo en lo permitido por la licencia MIT.</li>
+        <li>Utilizar la Plataforma para realizar ataques informáticos o pruebas de penetración no autorizadas.</li>
+        <li>Distribuir malware o código malicioso a través de la Plataforma.</li>
+      </ul>
+    </div>
+
+    <div class="legal-section">
+      <h2>4. Licencia de software</h2>
+      <div class="legal-highlight">
+        <p>Cyntia Core se distribuye bajo licencia <strong>MIT</strong>, lo que permite su uso, copia, modificación y distribución libre, siempre que se incluya la nota de copyright original.</p>
+      </div>
+      <p>Las versiones Pro y Enterprise pueden incluir componentes adicionales con licencias comerciales diferentes. Los términos específicos de cada plan se detallan en la sección de Servicios.</p>
+    </div>
+
+    <div class="legal-section">
+      <h2>5. Protección de datos</h2>
+      <p>El tratamiento de datos personales se rige por nuestra <a href="privacidad.html" style="color: var(--crimson-light); text-decoration: underline;">Política de Privacidad</a>, que forma parte integrante de estos Términos.</p>
+      <p>La Plataforma procesa datos de seguridad (logs, eventos, alertas) de la infraestructura del usuario. Estos datos se tratan conforme al Reglamento General de Protección de Datos (RGPD) y la Ley Orgánica de Protección de Datos (LOPD-GDD).</p>
+    </div>
+
+    <div class="legal-section">
+      <h2>6. Disponibilidad del servicio</h2>
+      <p>La disponibilidad de la Plataforma depende del plan contratado. Cyntia no garantiza un tiempo de actividad del 100%, si bien los planes Enterprise incluyen SLA con compromisos específicos de disponibilidad.</p>
+      <p>Cyntia se reserva el derecho de realizar tareas de mantenimiento que puedan afectar temporalmente al servicio, notificando al usuario con la mayor antelación posible.</p>
+    </div>
+
+    <div class="legal-section">
+      <h2>7. Limitación de responsabilidad</h2>
+      <div class="legal-highlight">
+        <p>La Plataforma se proporciona "tal cual" (AS IS). Cyntia no garantiza que el software detecte todas las amenazas de seguridad ni que esté libre de errores. El usuario es el único responsable de la seguridad de su infraestructura.</p>
+      </div>
+      <p>En la máxima medida permitida por la ley, Cyntia no será responsable de daños directos, indirectos, incidentales o consecuentes derivados del uso o la imposibilidad de uso de la Plataforma.</p>
+    </div>
+
+    <div class="legal-section">
+      <h2>8. Propiedad intelectual</h2>
+      <p>La marca "Cyntia", el logotipo y el diseño de la interfaz son propiedad del equipo de desarrollo del proyecto. El código fuente de Cyntia Core se distribuye bajo licencia MIT.</p>
+      <p>El usuario conserva todos los derechos sobre sus datos de seguridad procesados por la Plataforma.</p>
+    </div>
+
+    <div class="legal-section">
+      <h2>9. Modificaciones de los términos</h2>
+      <p>Cyntia se reserva el derecho de modificar estos Términos y Condiciones en cualquier momento. Las modificaciones se publicarán en esta página con la fecha de actualización correspondiente. El uso continuado de la Plataforma tras la publicación de cambios implica la aceptación de los nuevos términos.</p>
+    </div>
+
+    <div class="legal-section">
+      <h2>10. Legislación aplicable</h2>
+      <p>Estos Términos y Condiciones se rigen por la legislación española. Para cualquier controversia derivada de estos términos, las partes se someten a la jurisdicción de los juzgados y tribunales de Barcelona, España.</p>
+    </div>
+
+    <div class="legal-section">
+      <h2>11. Contacto</h2>
+      <p>Para cualquier consulta relacionada con estos Términos y Condiciones, puede contactarnos a través del <a href="index.html#contacto" style="color: var(--crimson-light); text-decoration: underline;">formulario de contacto</a> de nuestra web o enviando un email a <strong>legal@cyntia.io</strong>.</p>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-bottom" style="border-top: none; padding-top: 0;">
+      <span>© 2025 Cyntia · Trabajo de Final de Grado · Todos los derechos reservados</span>
+      <span class="footer-bottom-links">
+        <a href="privacidad.html">Privacidad</a>
+        <a href="terminos.html">Términos</a>
+      </span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Theme toggle
+(function() {
+  const root = document.documentElement;
+  const toggle = document.getElementById('themeToggle');
+  const saved = localStorage.getItem('cyntia-theme');
+  const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  root.setAttribute('data-theme', saved || (systemDark ? 'dark' : 'light'));
+  toggle?.addEventListener('click', () => {
+    const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    localStorage.setItem('cyntia-theme', next);
+  });
+})();
+</script>
+</body>
+</html>
